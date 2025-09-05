@@ -35,7 +35,7 @@ class FilaEncadeada {
     public void imprime() {
         No noAtual = inicio;
         if (noAtual == null) {
-            System.out.println("(fila vazia)");
+            System.out.println("Fila vazia");
             return;
         }
         while (noAtual != null) {
