@@ -7,17 +7,19 @@ class MergeVetor {
         int fim;
         int tamanho;
 
-        FilaVetor(int cap) {
-            capacidade = cap;
+        FilaVetor(int capacidade) {
+            this.capacidade = capacidade;
             dados = new int[capacidade];
-            inicio = 0; fim = 0; tamanho = 0;
+            inicio = 0;
+            fim = 0;
+            tamanho = 0;
         }
 
-        void insere(int v) {
+        void insere(int valor) {
             if (tamanho == capacidade) {
                 return;
             }
-            dados[fim] = v;
+            dados[fim] = valor;
             fim = fim + 1;
             if (fim == capacidade) fim = 0;
             tamanho = tamanho + 1;
@@ -25,78 +27,101 @@ class MergeVetor {
 
         int remove() {
             if (tamanho == 0) return Integer.MIN_VALUE;
-            int v = dados[inicio];
+            int valorRemovido = dados[inicio];
             inicio = inicio + 1;
             if (inicio == capacidade) inicio = 0;
             tamanho = tamanho - 1;
-            return v;
+            return valorRemovido;
         }
 
         void imprime() {
-            if (tamanho == 0) { System.out.println("(fila vazia)"); return; }
-            int i = 0;
-            while (i < tamanho) {
-                int idx = inicio + i;
-                if (idx >= capacidade) idx = idx - capacidade;
-                System.out.print(dados[idx]);
+            if (tamanho == 0) {
+                System.out.println("Fila vazia");
+                return;
+            }
+            for (int i = 0; i < tamanho; i++) {
+                int indice = inicio + i;
+                if (indice >= capacidade) indice = indice - capacidade;
+                System.out.print(dados[indice]);
                 if (i != (tamanho - 1)) System.out.print(" ");
-                i = i + 1;
             }
             System.out.println();
         }
     }
 
-    static FilaVetor merge(FilaVetor A, FilaVetor B) {
-        FilaVetor C = new FilaVetor(A.tamanho + B.tamanho);
+    static FilaVetor merge(FilaVetor filaA, FilaVetor filaB) {
+        FilaVetor filaC = new FilaVetor(filaA.tamanho + filaB.tamanho);
 
-        int temA = (A.tamanho > 0) ? 1 : 0;
-        int temB = (B.tamanho > 0) ? 1 : 0;
-        int a = 0, b = 0;
+        int temA = (filaA.tamanho > 0) ? 1 : 0;
+        int temB = (filaB.tamanho > 0) ? 1 : 0;
+        int valorA = 0, valorB = 0;
 
-        if (temA == 1) { a = A.remove(); System.out.println("Removido da Fila A: " + a); }
-        if (temB == 1) { b = B.remove(); System.out.println("Removido da Fila B: " + b); }
+        if (temA == 1) {
+            valorA = filaA.remove();
+            System.out.println("Removido da Fila A: " + valorA);
+        }
+        if (temB == 1) {
+            valorB = filaB.remove();
+            System.out.println("Removido da Fila B: " + valorB);
+        }
 
         while (temA == 1 || temB == 1) {
-            if (temB == 0 || (temA == 1 && a <= b)) {
-                C.insere(a);
-                if (A.tamanho > 0) { a = A.remove(); System.out.println("Removido da Fila A: " + a); }
-                else temA = 0;
+            if (temB == 0 || (temA == 1 && valorA <= valorB)) {
+                filaC.insere(valorA);
+                if (filaA.tamanho > 0) {
+                    valorA = filaA.remove();
+                    System.out.println("Removido da Fila A: " + valorA);
+                } else temA = 0;
             } else {
-                C.insere(b);
-                if (B.tamanho > 0) { b = B.remove(); System.out.println("Removido da Fila B: " + b); }
-                else temB = 0;
+                filaC.insere(valorB);
+                if (filaB.tamanho > 0) {
+                    valorB = filaB.remove();
+                    System.out.println("Removido da Fila B: " + valorB);
+                } else temB = 0;
             }
         }
-        return C;
+        return filaC;
     }
 
     static int lerInteiro() throws Exception {
-        int c = System.in.read();
-        while (c == ' ' || c == '\n' || c == '\r' || c == '\t') c = System.in.read();
+        int caractere = System.in.read();
+        while (caractere == ' ' || caractere == '\n' || caractere == '\r' || caractere == '\t')
+            caractere = System.in.read();
         int sinal = 1;
-        if (c == '-') { sinal = -1; c = System.in.read(); }
-        int v = 0;
-        while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = System.in.read(); }
-        return v * sinal;
+        if (caractere == '-') {
+            sinal = -1;
+            caractere = System.in.read();
+        }
+        int valor = 0;
+        while (caractere >= '0' && caractere <= '9') {
+            valor = valor * 10 + (caractere - '0');
+            caractere = System.in.read();
+        }
+        return valor * sinal;
     }
-    static void p(String s){ System.out.print(s); }
+
+    static void imprimir(String texto){
+        System.out.print(texto);
+    }
 
     public static void main(String[] args) throws Exception {
-        p("Quantidade de elementos da Fila A: ");
-        int nA = lerInteiro();
-        p("Quantidade de elementos da Fila B: ");
-        int nB = lerInteiro();
+        imprimir("Quantidade de elementos da Fila A: ");
+        int quantidadeA = lerInteiro();
+        imprimir("Quantidade de elementos da Fila B: ");
+        int quantidadeB = lerInteiro();
 
-        FilaVetor A = new FilaVetor(nA);
-        FilaVetor B = new FilaVetor(nB);
+        FilaVetor filaA = new FilaVetor(quantidadeA);
+        FilaVetor filaB = new FilaVetor(quantidadeB);
 
-        p("Insira a Fila A em ordem crescente:\n");
-        for (int i = 0; i < nA; i++) A.insere(lerInteiro());
-        p("Insira a Fila B em ordem crescente:\n");
-        for (int i = 0; i < nB; i++) B.insere(lerInteiro());
+        imprimir("Insira a Fila A em ordem crescente:\n");
+        for (int i = 0; i < quantidadeA; i++)
+            filaA.insere(lerInteiro());
+        imprimir("Insira a Fila B em ordem crescente:\n");
+        for (int i = 0; i < quantidadeB; i++)
+            filaB.insere(lerInteiro());
 
-        FilaVetor C = merge(A, B);
+        FilaVetor filaC = merge(filaA, filaB);
         System.out.println("Fila C (merge):");
-        C.imprime();
+        filaC.imprime();
     }
 }

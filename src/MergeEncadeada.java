@@ -2,92 +2,123 @@ class MergeEncadeada {
 
     static class No {
         int valor;
-        No prox;
+        No proximo;
     }
 
     static class Fila {
         No inicio, fim;
         int tamanho;
 
-        void insere(int v) {
-            No n = new No();
-            n.valor = v; n.prox = null;
-            if (inicio == null) { inicio = n; fim = n; }
-            else { fim.prox = n; fim = n; }
+        void insere(int valor) {
+            No novoNo = new No();
+            novoNo.valor = valor;
+            novoNo.proximo = null;
+            if (inicio == null) {
+                inicio = novoNo;
+                fim = novoNo;
+            } else {
+                fim.proximo = novoNo;
+                fim = novoNo;
+            }
             tamanho = tamanho + 1;
         }
 
         int remove() {
             if (inicio == null) return Integer.MIN_VALUE;
-            int v = inicio.valor;
-            inicio = inicio.prox;
+            int valorRemovido = inicio.valor;
+            inicio = inicio.proximo;
             if (inicio == null) fim = null;
             tamanho = tamanho - 1;
-            return v;
+            return valorRemovido;
         }
 
         void imprime() {
-            No p = inicio;
-            if (p == null) { System.out.println("(fila vazia)"); return; }
-            while (p != null) {
-                System.out.print(p.valor);
-                if (p.prox != null) System.out.print(" ");
-                p = p.prox;
+            No noAtual = inicio;
+            if (noAtual == null) {
+                System.out.println("Fila vazia");
+                return;
+            }
+            while (noAtual != null) {
+                System.out.print(noAtual.valor);
+                if (noAtual.proximo != null) System.out.print(" ");
+                noAtual = noAtual.proximo;
             }
             System.out.println();
         }
     }
 
-    static Fila merge(Fila A, Fila B) {
-        Fila C = new Fila();
+    static Fila merge(Fila filaA, Fila filaB) {
+        Fila filaC = new Fila();
 
-        int temA = (A.tamanho > 0) ? 1 : 0;
-        int temB = (B.tamanho > 0) ? 1 : 0;
-        int a = 0, b = 0;
-        if (temA == 1) { a = A.remove(); System.out.println("Removido da Fila A: " + a); }
-        if (temB == 1) { b = B.remove(); System.out.println("Removido da Fila B: " + b); }
+        int temA = (filaA.tamanho > 0) ? 1 : 0;
+        int temB = (filaB.tamanho > 0) ? 1 : 0;
+        int valorA = 0, valorB = 0;
+        if (temA == 1) {
+            valorA = filaA.remove();
+            System.out.println("Removido da Fila A: " + valorA);
+        }
+        if (temB == 1) {
+            valorB = filaB.remove();
+            System.out.println("Removido da Fila B: " + valorB);
+        }
 
         while (temA == 1 || temB == 1) {
-            if (temB == 0 || (temA == 1 && a <= b)) {
-                C.insere(a);
-                if (A.tamanho > 0) { a = A.remove(); System.out.println("Removido da Fila A: " + a); }
-                else temA = 0;
+            if (temB == 0 || (temA == 1 && valorA <= valorB)) {
+                filaC.insere(valorA);
+                if (filaA.tamanho > 0) {
+                    valorA = filaA.remove();
+                    System.out.println("Removido da Fila A: " + valorA);
+                } else temA = 0;
             } else {
-                C.insere(b);
-                if (B.tamanho > 0) { b = B.remove(); System.out.println("Removido da Fila B: " + b); }
-                else temB = 0;
+                filaC.insere(valorB);
+                if (filaB.tamanho > 0) {
+                    valorB = filaB.remove();
+                    System.out.println("Removido da Fila B: " + valorB);
+                } else temB = 0;
             }
         }
-        return C;
+        return filaC;
     }
 
     static int lerInteiro() throws Exception {
-        int c = System.in.read();
-        while (c == ' ' || c == '\n' || c == '\r' || c == '\t') c = System.in.read();
+        int caractere = System.in.read();
+        while (caractere == ' ' || caractere == '\n' || caractere == '\r' || caractere == '\t')
+            caractere = System.in.read();
         int sinal = 1;
-        if (c == '-') { sinal = -1; c = System.in.read(); }
-        int v = 0;
-        while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = System.in.read(); }
-        return v * sinal;
+        if (caractere == '-') {
+            sinal = -1;
+            caractere = System.in.read();
+        }
+        int valor = 0;
+        while (caractere >= '0' && caractere <= '9') {
+            valor = valor * 10 + (caractere - '0');
+            caractere = System.in.read();
+        }
+        return valor * sinal;
     }
-    static void p(String s){ System.out.print(s); }
+
+    static void imprimir(String texto){
+        System.out.print(texto);
+    }
 
     public static void main(String[] args) throws Exception {
-        Fila A = new Fila();
-        Fila B = new Fila();
+        Fila filaA = new Fila();
+        Fila filaB = new Fila();
 
-        p("Quantidade de elementos da Fila A: ");
-        int nA = lerInteiro();
-        p("Insira a Fila A em ordem crescente:\n");
-        for (int i = 0; i < nA; i++) A.insere(lerInteiro());
+        imprimir("Quantidade de elementos da Fila A: ");
+        int quantidadeA = lerInteiro();
+        imprimir("Insira a Fila A em ordem crescente:\n");
+        for (int i = 0; i < quantidadeA; i++)
+            filaA.insere(lerInteiro());
 
-        p("Quantidade de elementos da Fila B: ");
-        int nB = lerInteiro();
-        p("Insira a Fila B em ordem crescente:\n");
-        for (int i = 0; i < nB; i++) B.insere(lerInteiro());
+        imprimir("Quantidade de elementos da Fila B: ");
+        int quantidadeB = lerInteiro();
+        imprimir("Insira a Fila B em ordem crescente:\n");
+        for (int i = 0; i < quantidadeB; i++)
+            filaB.insere(lerInteiro());
 
-        Fila C = merge(A, B);
+        Fila filaC = merge(filaA, filaB);
         System.out.println("Fila C (merge):");
-        C.imprime();
+        filaC.imprime();
     }
 }
