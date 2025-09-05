@@ -26,7 +26,7 @@ class PilhaEncadeada {
     public void imprime() {
         No noAtual = topo;
         if (noAtual == null) {
-            System.out.println("(pilha vazia)");
+            System.out.println("Pilha vazia");
             return;
         }
         while (noAtual != null) {
